@@ -9,6 +9,7 @@ import type { Phrase } from '@/lib/database.types'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
@@ -64,6 +65,9 @@ export function PhraseForm({ open, onClose, seedId, phrase, onSaved }: PhraseFor
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>{isEdit ? 'Edit phrase' : 'Add phrase'}</DialogTitle>
+          <DialogDescription className="sr-only">
+            {isEdit ? 'Edit the Mandarin, Pinyin, and English for this phrase.' : 'Add a new phrase with Mandarin, Pinyin, and English.'}
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">

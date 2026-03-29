@@ -6,7 +6,6 @@ import { fetchSeedById } from '@/features/seeds/seedsService'
 import { fetchPhrasesBySeed } from '@/features/phrases/phrasesService'
 import { PhraseCard } from '@/features/phrases/PhraseCard'
 import { PhraseForm } from '@/features/phrases/PhraseForm'
-import { TtsWarningBanner } from '@/components/shared/TtsWarningBanner'
 import { Header } from '@/components/layout/Header'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -105,8 +104,6 @@ export function SeedDetail() {
       <Header title={seed?.name ?? 'Seed'} actions={addButton} />
 
       <div className="p-4 md:p-6">
-        <TtsWarningBanner />
-
         {/* Desktop header */}
         <div className="mb-6 hidden md:block">
           <Link

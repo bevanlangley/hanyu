@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom'
 import { fetchSeeds } from '@/features/seeds/seedsService'
 import { useDrilling } from '@/features/drilling/useDrilling'
 import { DrillingControls } from '@/features/drilling/DrillingControls'
-import { TtsWarningBanner } from '@/components/shared/TtsWarningBanner'
 import { Header } from '@/components/layout/Header'
 import { Spinner } from '@/components/ui/Spinner'
 import { Skeleton } from '@/components/ui/Skeleton'
@@ -49,8 +48,6 @@ export function DrillingMode() {
       <Header title="Drill" />
 
       <div className="p-4 md:p-6">
-        <TtsWarningBanner />
-
         {/* Desktop header */}
         <div className="mb-6 hidden md:block">
           <h1 className="text-lg font-medium text-grey-800 dark:text-grey-100">Fluency Drilling</h1>

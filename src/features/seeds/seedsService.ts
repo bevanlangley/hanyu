@@ -42,6 +42,7 @@ export async function fetchSeedById(id: string): Promise<Seed | null> {
   const { data, error } = await supabase.from('seeds').select('*').eq('id', id).single()
 
   if (error) {
+    if (error.code === 'PGRST116') return null
     logger.error('Failed to fetch seed', error)
     throw error
   }

@@ -3,7 +3,6 @@ import { Search, X } from 'lucide-react'
 import { toast } from 'sonner'
 import { fetchAllPhrases } from '@/features/phrases/phrasesService'
 import { PhraseCardGlobal } from '@/features/phrases/PhraseCardGlobal'
-import { TtsWarningBanner } from '@/components/shared/TtsWarningBanner'
 import { Header } from '@/components/layout/Header'
 import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/Skeleton'
@@ -57,8 +56,6 @@ export function GlobalPhrases() {
       <Header title="Phrases" />
 
       <div className="p-4 md:p-6">
-        <TtsWarningBanner />
-
         {/* Desktop header */}
         <div className="mb-6 hidden md:block">
           <h1 className="text-lg font-medium text-grey-800 dark:text-grey-100">All Phrases</h1>

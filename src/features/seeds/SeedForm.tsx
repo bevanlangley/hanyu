@@ -9,6 +9,7 @@ import type { Seed } from '@/lib/database.types'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
@@ -63,6 +64,9 @@ export function SeedForm({ open, onClose, seed, onSaved }: SeedFormProps) {
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>{isEdit ? 'Edit seed' : 'New seed'}</DialogTitle>
+          <DialogDescription className="sr-only">
+            {isEdit ? 'Edit the details for this seed.' : 'Add a new learning source seed.'}
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">

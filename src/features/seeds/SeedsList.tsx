@@ -5,7 +5,6 @@ import { fetchSeeds, getUniqueTags } from '@/features/seeds/seedsService'
 import { SeedCard } from '@/features/seeds/SeedCard'
 import { SeedForm } from '@/features/seeds/SeedForm'
 import { TagFilter } from '@/features/seeds/TagFilter'
-import { TtsWarningBanner } from '@/components/shared/TtsWarningBanner'
 import { Header } from '@/components/layout/Header'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/Skeleton'
@@ -89,8 +88,6 @@ export function SeedsList() {
       <Header title="Seeds" actions={createButton} />
 
       <div className="p-4 md:p-6">
-        <TtsWarningBanner />
-
         {/* Desktop header */}
         <div className="mb-6 hidden items-center justify-between md:flex">
           <div>
