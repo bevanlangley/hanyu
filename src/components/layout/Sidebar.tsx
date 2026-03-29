@@ -17,7 +17,7 @@ export function Sidebar() {
       {/* Logo */}
       <div className="flex h-14 items-center border-b border-grey-200 px-4 dark:border-grey-700">
         <span className="text-lg font-medium text-grey-800 dark:text-grey-100">
-          華語 HuaYu
+          花語 HuaYu
         </span>
       </div>
 
