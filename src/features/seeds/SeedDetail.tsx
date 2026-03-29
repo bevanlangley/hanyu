@@ -1,0 +1,204 @@
+import { useState, useEffect } from 'react'
+import { useParams, Link, useNavigate } from 'react-router-dom'
+import { ArrowLeft, Plus, Zap } from 'lucide-react'
+import { toast } from 'sonner'
+import { fetchSeedById } from '@/features/seeds/seedsService'
+import { fetchPhrasesBySeed } from '@/features/phrases/phrasesService'
+import { PhraseCard } from '@/features/phrases/PhraseCard'
+import { PhraseForm } from '@/features/phrases/PhraseForm'
+import { TtsWarningBanner } from '@/components/shared/TtsWarningBanner'
+import { Header } from '@/components/layout/Header'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Skeleton } from '@/components/ui/Skeleton'
+import { InlineError } from '@/components/ui/InlineError'
+import { Pagination } from '@/components/ui/Pagination'
+import type { Seed, Phrase } from '@/lib/database.types'
+
+const PAGE_SIZE = 25
+
+export function SeedDetail() {
+  const { seedId } = useParams<{ seedId: string }>()
+  const navigate = useNavigate()
+  const [seed, setSeed] = useState<Seed | null>(null)
+  const [phrases, setPhrases] = useState<Phrase[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [formOpen, setFormOpen] = useState(false)
+  const [editingPhrase, setEditingPhrase] = useState<Phrase | null>(null)
+  const [page, setPage] = useState(1)
+
+  useEffect(() => {
+    if (!seedId) return
+    loadData()
+  }, [seedId])
+
+  async function loadData() {
+    setLoading(true)
+    setError(null)
+    try {
+      const [seedData, phrasesData] = await Promise.all([
+        fetchSeedById(seedId!),
+        fetchPhrasesBySeed(seedId!),
+      ])
+      if (!seedData) {
+        navigate('/seeds', { replace: true })
+        return
+      }
+      setSeed(seedData)
+      setPhrases(phrasesData)
+    } catch {
+      toast.error('Could not load seed. Try again.')
+      setError('Could not load seed.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  function openCreate() {
+    setEditingPhrase(null)
+    setFormOpen(true)
+  }
+
+  function handlePhraseEdit(phrase: Phrase) {
+    setEditingPhrase(phrase)
+    setFormOpen(true)
+  }
+
+  function handlePhraseSaved(saved: Phrase) {
+    setPhrases(prev => {
+      const exists = prev.find(p => p.id === saved.id)
+      if (exists) return prev.map(p => (p.id === saved.id ? saved : p))
+      return [...prev, saved]
+    })
+  }
+
+  function handlePhraseDeleted(id: string) {
+    setPhrases(prev => prev.filter(p => p.id !== id))
+  }
+
+  const totalPages = Math.max(1, Math.ceil(phrases.length / PAGE_SIZE))
+  const paginated = phrases.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+
+  const addButton = (
+    <Button size="sm" onClick={openCreate}>
+      <Plus className="h-4 w-4" />
+      Add phrase
+    </Button>
+  )
+
+  if (loading) {
+    return (
+      <div className="p-4 md:p-6">
+        <Skeleton className="mb-4 h-6 w-48" />
+        <div className="grid gap-3 sm:grid-cols-2">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-28 w-full" />
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex flex-col">
+      <Header title={seed?.name ?? 'Seed'} actions={addButton} />
+
+      <div className="p-4 md:p-6">
+        <TtsWarningBanner />
+
+        {/* Desktop header */}
+        <div className="mb-6 hidden md:block">
+          <Link
+            to="/seeds"
+            className="mb-4 inline-flex items-center gap-1 text-sm text-grey-500 hover:text-grey-700 dark:text-grey-400 dark:hover:text-grey-200"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Seeds
+          </Link>
+          <div className="mt-3 flex items-start justify-between gap-4">
+            <div>
+              <h1 className="text-lg font-medium text-grey-800 dark:text-grey-100">{seed?.name}</h1>
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                <Badge variant="count">{phrases.length} phrase{phrases.length !== 1 ? 's' : ''}</Badge>
+                {seed?.tag && <Badge variant="tag">{seed.tag}</Badge>}
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              {phrases.length > 0 && (
+                <Button variant="secondary" size="sm" asChild>
+                  <Link to="/drill" state={{ seedId: seed?.id }}>
+                    <Zap className="h-4 w-4" />
+                    Drill
+                  </Link>
+                </Button>
+              )}
+              {addButton}
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile back link */}
+        <div className="mb-4 flex items-center gap-2 md:hidden">
+          <Link
+            to="/seeds"
+            className="inline-flex items-center gap-1 text-sm text-grey-500 hover:text-grey-700 dark:text-grey-400 dark:hover:text-grey-200"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Seeds
+          </Link>
+          {phrases.length > 0 && (
+            <Button variant="secondary" size="sm" className="ml-auto" asChild>
+              <Link to="/drill" state={{ seedId: seed?.id }}>
+                <Zap className="h-4 w-4" />
+                Drill
+              </Link>
+            </Button>
+          )}
+        </div>
+
+        {error && <InlineError message={error} className="mb-4" />}
+
+        {phrases.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <p className="text-sm text-grey-500 dark:text-grey-400">
+              No phrases yet. Add your first phrase from this source.
+            </p>
+            <Button className="mt-4" onClick={openCreate}>
+              <Plus className="h-4 w-4" />
+              Add a phrase
+            </Button>
+          </div>
+        ) : (
+          <>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {paginated.map(phrase => (
+                <PhraseCard
+                  key={phrase.id}
+                  phrase={phrase}
+                  onEdit={handlePhraseEdit}
+                  onDeleted={handlePhraseDeleted}
+                />
+              ))}
+            </div>
+            {phrases.length > PAGE_SIZE && (
+              <div className="mt-6">
+                <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+              </div>
+            )}
+          </>
+        )}
+      </div>
+
+      {seed && (
+        <PhraseForm
+          open={formOpen}
+          onClose={() => setFormOpen(false)}
+          seedId={seed.id}
+          phrase={editingPhrase}
+          onSaved={handlePhraseSaved}
+        />
+      )}
+    </div>
+  )
+}
