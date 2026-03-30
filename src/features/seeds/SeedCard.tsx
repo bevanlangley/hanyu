@@ -46,7 +46,7 @@ export function SeedCard({ seed, onEdit, onDeleted }: SeedCardProps) {
         <div className="min-w-0 flex-1">
           <Link
             to={`/seeds/${seed.id}`}
-            className="block truncate text-sm font-medium text-grey-800 hover:text-primary-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/50 dark:text-grey-100 dark:hover:text-primary-400"
+            className="block line-clamp-2 text-sm font-medium text-grey-800 hover:text-primary-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/50 dark:text-grey-100 dark:hover:text-primary-400"
           >
             {seed.name}
           </Link>

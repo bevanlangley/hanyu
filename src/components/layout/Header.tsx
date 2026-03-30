@@ -12,7 +12,7 @@ export function Header({ title, actions }: HeaderProps) {
 
   return (
     <header className="flex h-14 items-center justify-between border-b border-grey-200 bg-white px-4 dark:border-grey-700 dark:bg-grey-800 md:hidden">
-      <span className="text-base font-medium text-grey-800 dark:text-grey-100">{title}</span>
+      <span className="min-w-0 flex-1 truncate text-base font-medium text-grey-800 dark:text-grey-100">{title}</span>
       <div className="flex items-center gap-2">
         {actions}
         <button
